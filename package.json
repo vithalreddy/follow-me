@@ -1,0 +1,40 @@
+{
+  "name": "follow-me",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:server": "node server/index.js",
+    "start:client": "node client/index.js",
+    "start:server:dev": "nodemon server/index.js",
+    "start:client:dev": "nodemon client/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vithalreddy/follow-me.git"
+  },
+  "author": "Vithal Reddy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vithalreddy/follow-me/issues"
+  },
+  "homepage": "https://github.com/vithalreddy/follow-me#readme",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "enquirer": "^2.3.4",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "nodemon": "^2.0.2",
+    "ora": "^4.0.3",
+    "pino": "^5.16.0",
+    "pino-pretty": "^3.6.0",
+    "prettier": "^1.19.1",
+    "ws": "^7.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1"
+  }
+}
