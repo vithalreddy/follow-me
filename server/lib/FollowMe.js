@@ -1,8 +1,9 @@
 const { prompt } = require('enquirer');
 const ora = require('ora');
-const chalk = require('chalk');
 
-const { logger } = require('../../common');
+const { logger, CONFIG } = require('../../common');
+
+prompt.on('cancel', () => process.exit());
 
 class FollowMe {
   constructor(wssConn) {
@@ -11,11 +12,11 @@ class FollowMe {
     this.wssConn = wssConn;
     this.timer = null;
     this.currentChar = null;
+    this.noOfTimeouts = 0;
 
     this.wssConn.on('message', message => {
       this.handleIncomingData(JSON.parse(message));
     });
-    this.restart();
   }
 
   handleAnswer(data) {
@@ -32,34 +33,29 @@ class FollowMe {
     this.spinner.start();
     if (type === 'charVerify') {
       this.handleAnswer(data);
+    } else if (type === 'restart') {
+      this.restart();
     }
     this.spinner.stopAndPersist();
   }
 
   handleGameOver() {
     if (this.timer) clearTimeout(this.timer);
-    if (this.score === 10) {
-      this.send({
-        type: 'gameStatus',
-        data: { score: this.score, status: 'won' },
-      });
-    } else if (this.score === -3) {
-      this.send({
-        type: 'gameStatus',
-        data: { score: this.score, status: 'lost' },
-      });
+    if (this.score === 5) {
+      this.send({ score: this.score, status: 'won' }, 'gameStatus');
+    } else if (this.score === -3 || this.noOfTimeouts === 3) {
+      this.send({ score: this.score, status: 'lost' }, 'gameStatus');
     } else {
-      this.send({
-        type: 'score',
-        data: { score: this.score },
-      });
+      this.send({ score: this.score }, 'score');
       this.takeUserInput();
     }
   }
 
   handleTimeout() {
     this.score -= 1;
-    console.log('Timed out!!!');
+    this.noOfTimeouts -= 1;
+    logger.warn('Timed out!!!');
+    this.send({}, 'timedOut');
     this.handleGameOver();
   }
 
@@ -79,8 +75,10 @@ class FollowMe {
     this.currentChar = inputStr;
 
     if (this.timer) clearTimeout(this.timer);
+
     this.handleTimeout = this.handleTimeout.bind(this);
-    this.timer = setTimeout(this.handleTimeout, 10000);
+
+    this.timer = setTimeout(this.handleTimeout, CONFIG.timeOutInMS);
   }
 
   async takeUserInput() {
@@ -95,15 +93,14 @@ class FollowMe {
 
   async restart() {
     this.score = 0;
+    this.noOfTimeouts = 0;
+    this.currentChar = null;
+
     if (this.timer) {
       clearTimeout(this.timer);
     }
+    this.takeUserInput();
   }
 }
-
-// (async () => {
-//   const fm = new FollowMe();
-//   await fm.takeUserInput();
-// })();
 
 module.exports = { FollowMe };
