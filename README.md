@@ -14,5 +14,5 @@ It is a simple websocket based game developed using Nodejs, ws module etc
 - Next start the client using npm cmd:: `npm run start:client`
 - Once Client is connected to server, server can send a key to client, and client has to reply the same key within fixed time (the time can be passed through env var or can be updated in `common/config.js` file.)
 - once client answers 10 question correctly wins the game
-- if score reaces -3 then user loses or when user timesout 3 times continuosly.
-- please refer above gif for more info
+- if score reaces -3 then user loses or when user timesout 3 times continuously.
+- please refer above gifs for more info
