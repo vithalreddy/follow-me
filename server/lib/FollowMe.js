@@ -41,7 +41,7 @@ class FollowMe {
 
   handleGameOver() {
     if (this.timer) clearTimeout(this.timer);
-    if (this.score === 5) {
+    if (this.score === 10) {
       this.send({ score: this.score, status: 'won' }, 'gameStatus');
     } else if (this.score === -3 || this.noOfTimeouts === 3) {
       this.send({ score: this.score, status: 'lost' }, 'gameStatus');
